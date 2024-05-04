@@ -5,28 +5,58 @@ const keys = {
     account_id: '21215212'
 }
 
+const link = `https://api.themoviedb.org/3/account/${keys.account_id}/favorite/movies?api_key=${keys.api_key}`;
+
 let moviesResult = document.getElementById("moviesResult");
 
 
 async function setFav(id, favBool){
     moviesResult.innerHTML="";
-    showFavs();
+    //Exercici 3
+    try {
+        const response = await fetch(link, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                media_type: 'movie',
+                media_id: id,
+                favorite: favBool
+            })
+        });
+
+        if (!response.ok){
+            throw new Error('Error al hacer el fetch de favoritos');
+        }
+        
+        console.log(`Pelicula con id ${id} marcado como ${favBool}`)
+        showFavs();
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 async function showFavs(){
     moviesResult.innerHTML="";
     //Exercici 2
-    fetch(`https://api.themoviedb.org/3/account/${account_id}/favorite/movies?api_key=${api_key}`);
-    .then(response => {
-        if(!response.ok){
-            throw new Error('Failed to fetch in FAVORITOS')
+    try {
+        const response = await fetch(link);
+        if (!response.ok){
+            throw new Error('Error al hacer el fetch de favoritos');
         }
-        return JSON.response();
-    });
-    .then(data => {
+
+        const data = await response.json();
         const peliculasFavoritas = data.results;
-        const contenedorFavorito = document.getElementById('favorite')
-    })
+
+        peliculasFavoritas.forEach(movie => {
+            printMovie(movie, true, false);
+        });
+        
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 function searchMovies(query){
@@ -51,8 +81,8 @@ document.getElementById("showWatch").addEventListener("click", function(){
     removeActive();
     this.classList.add("active");
 
-    //showWatch();
-})
+    showWatch();
+});
 
 /* Funcions per detectar la cerca d'una pel·lícula */
 // Intro a l'input
@@ -91,4 +121,3 @@ function printMovie(movie, fav, watch){
                                         <a id="watch" onClick="setWatch(${movie.id}, ${!watch})"><i class="fa-solid fa-eye ${watchIcon}"></i></a>
                                     </div>`;
 }
-
