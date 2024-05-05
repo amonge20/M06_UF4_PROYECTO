@@ -115,3 +115,20 @@ main{
     color: var(--gray);
 }
 
+/*GIF PER ACTUALITZAR LA PAGINA*/
+.loading {
+    display: none; 
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999; 
+    width: 80px; 
+    height: 80px;
+    background-image: url('img/Spinner@1x-1.0s-200px-200px.gif'); 
+    background-size: cover;
+}
+
+.visible {
+    display: block;
+}
